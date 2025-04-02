@@ -16,7 +16,7 @@ end entity;
 architecture rtl of T18_Timer is
 
 
-    --Signal for counting clock periods
+   
     signal Ticks : integer;
 
     begin
@@ -34,17 +34,17 @@ architecture rtl of T18_Timer is
 
                         
                     else
-                        --True once every second
+                      
                         if Ticks = ClockFrequency - 1 then 
                             Ticks <= 0; 
                             
-                            --True once every minute
+                           
                             if Seconds = 59 then
                                 Seconds <= 0;
-                                --True once every hour
+                                
                                 if Minutes = 59 then
                                     Minutes = 0;
-                                    --True once a day
+                                    
                                     if Hours = 23 then
                                         Hours <= 0;
                                     else 
