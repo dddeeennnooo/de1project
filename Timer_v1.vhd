@@ -7,13 +7,13 @@ generic(ClockFrequency : integer);
 port (
     Clk : in std_logic;
     nRst : in std_logic;
-    Seconds : inout integer;
-    Minutes : inout integer;
-    Hours  : inout integer);
+    Seconds : out integer;
+    Minutes : out integer;
+    Hours  : out integer);
 
 end entity;    
 
-architecture rtl of T18_Timer is
+architecture rtl of Timer_v1 is
 
 
    
