@@ -1,0 +1,106 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 04/15/2025 11:38:18 AM
+-- Design Name: 
+-- Module Name: stopwatch - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_unsigned.all;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx primitives in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity main is
+    Port ( start : in  STD_LOGIC;
+           stop : in  STD_LOGIC;
+           reset : in  STD_LOGIC;
+           clock : in  STD_LOGIC;
+           output : out  STD_LOGIC_VECTOR (7 downto 0));
+end main;
+
+architecture Behavioral of main is
+constant clock_period : time := 1 ms; 
+--variable cnt : INTEGER := '0';
+type state_type is (idle, running, paused);
+signal ps,ns : state_type:=idle;
+--deklaruje typy stavov + ps = present state, ns = next state
+signal temp : std_logic_vector (7 downto 0) := "00000000";
+--begin process (start,stop,reset)
+begin
+
+
+SEQ:process(clock)
+begin
+	if (rising_edge(clock)) then
+		ps <= ns;
+		--kazdym rising edge nastane transition do dalsieho stateu (ns)
+		case ps is 
+			when idle =>
+				if (start = '1') then 
+					temp <= temp + "00000001";
+					output <= temp;
+					ns <= running;
+				end if; --na vystupe je nova hodnota a prejde z prveho stavu do stavu running
+				if (stop = '1') then 
+					output <= temp;
+					ns <= ps;
+				end if; --pri stisnuti stop sa ponecha sucasny vystup a zaroven ostane v tom istom stave
+			when running => 
+				if (start = '1') then 
+					temp <= temp + "00000001";
+					output <= temp;
+					ns <= ps;
+				end if; --ked sa stisne start, zacne sa pocitat, ostane v tomto stave
+				if (stop = '1') then 
+					output <= temp;
+					ns <= paused;
+				end if; --ked sa stisne stop, zastavi sa output, a pokracuje do stavu paused
+				if (reset = '1') then 
+					temp <= "00000000";
+					output <= temp;
+					ns <= idle;
+				end if; --resetuje pocitadlo a navracia ho do povodneho stavu idle
+			when paused =>
+				if (start = '1') then 
+					temp <= temp + "00000001";
+					output <= temp;
+					ns <= running;
+				end if; --ak sa znova stisne start, obnovi sa pocitanie a pocitadlo sa  vrati naspat do stavu running
+				if (stop = '1') then 
+					output <= temp;
+					ns <= ps;
+				end if; --ked sa znova stlaci stop, pocitadlos a zastavi
+				if (reset = '1') then 
+					temp <= "00000000";
+					output <= temp;
+					ns <= idle;
+				end if; --resetuje cele pocitadlo a navracia ho do stavu idle
+			when others =>
+				null;
+		end case;
+	end if;
+end process;
+
+end Behavioral;
