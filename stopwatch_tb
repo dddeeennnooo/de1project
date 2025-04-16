@@ -19,10 +19,12 @@
 ----------------------------------------------------------------------------------
 
 
+
+
 -- Testbench automatically generated online
 -- at https://vhdl.lapinoo.net
--- Generation date : Wed, 16 Apr 2025 08:04:04 GMT
--- Request id : cfwk-fed377c2-67ff647488231
+-- Generation date : Wed, 16 Apr 2025 11:25:00 GMT
+-- Request id : cfwk-fed377c2-67ff938c07267
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -33,18 +35,26 @@ end tb_main;
 architecture tb of tb_main is
 
     component main
-        port (start  : in std_logic;
-              stop   : in std_logic;
-              reset  : in std_logic;
-              clock  : in std_logic;
-              output : out std_logic_vector (7 downto 0));
+        port (start   : in std_logic;
+              stop    : in std_logic;
+              reset   : in std_logic;
+              clock   : in std_logic;
+              output  : out std_logic_vector (7 downto 0);
+              hours   : out std_logic_vector (5 downto 0);
+              minutes : out std_logic_vector (5 downto 0);
+              seconds : out std_logic_vector (5 downto 0);
+              display : out std_logic_vector (6 downto 0));
     end component;
 
-    signal start  : std_logic;
-    signal stop   : std_logic;
-    signal reset  : std_logic;
-    signal clock  : std_logic;
-    signal output : std_logic_vector (7 downto 0);
+    signal start   : std_logic;
+    signal stop    : std_logic;
+    signal reset   : std_logic;
+    signal clock   : std_logic;
+    signal output  : std_logic_vector (7 downto 0);
+    signal hours   : std_logic_vector (5 downto 0);
+    signal minutes : std_logic_vector (5 downto 0);
+    signal seconds : std_logic_vector (5 downto 0);
+    signal display : std_logic_vector (6 downto 0);
 
     constant TbPeriod : time := 1000 ns; -- ***EDIT*** Put right period here
     signal TbClock : std_logic := '0';
@@ -53,11 +63,15 @@ architecture tb of tb_main is
 begin
 
     dut : main
-    port map (start  => start,
-              stop   => stop,
-              reset  => reset,
-              clock  => clock,
-              output => output);
+    port map (start   => start,
+              stop    => stop,
+              reset   => reset,
+              clock   => clock,
+              output  => output,
+              hours   => hours,
+              minutes => minutes,
+              seconds => seconds,
+              display => display);
 
     -- Clock generation
     TbClock <= not TbClock after TbPeriod/2 when TbSimEnded /= '1' else '0';
@@ -65,7 +79,7 @@ begin
     -- ***EDIT*** Check that clock is really your main clock signal
     clock <= TbClock;
 
-stimuli : process
+      stimuli : process
     variable wait_time : time := 100 ms;
 begin
     -- Initially reset the system
@@ -108,7 +122,6 @@ begin
     TbSimEnded <= '1'; -- End the simulation after a while
     wait;
 end process;
-
 
 end tb;
 
